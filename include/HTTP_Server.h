@@ -39,6 +39,6 @@ void http_set_status_code(
 
 void http_set_response_body(
 		HTTP_Server* http_server,
-		const char* body);
+		char* body);
 
 #endif

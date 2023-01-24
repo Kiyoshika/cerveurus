@@ -1,4 +1,5 @@
 #include "Parameters.h"
+#include <stdio.h>
 
 /*
  * Just testing the functionality locally so I don't have to
@@ -12,30 +13,56 @@ int main()
 	char* url = strdup("/someNested/route?name=Zach&val=100&jimmy=John");
 	struct ParameterArray * params = paramInit(10);
 	paramParse(params, url);
-	printf("PARSED PARAMS:\n\n");
-	for (size_t i = 0; i < params->n_members; ++i)
-	{
-		printf("KEY: %s\n", params->parameters[i].key);
-		printf("VALUE: %s\n\n", params->parameters[i].value);
-	}
-	printf("CLEANED URL: %s\n\n", url);
 
+	int result = 0;
+
+	// validate that URL is cleaned up
+	if (strcmp(url, "/someNested/route") != 0)
+	{
+		fprintf(stderr, "\nExpected URL to be: %s\nBut instead got: %s\n", "/someNested/route", url);
+		result = -1;
+		goto cleanup;
+	}
+
+	// could wrap these checks in a function but I'm too lazy now
+	
 	struct Parameter* search = NULL;
 
-	printf("SEARCH KEY: name\n");
 	search = paramGet(params, "name");
 	printf("FOUND VALUE: %s\n\n", search->value);
+	if (strcmp("Zach", search->value) != 0)
+	{
+		fprintf(stderr, "\nExpected to find '%s' for key '%s' but got '%s' instead.\n",
+				"Zach",
+				"name",
+				search->value);
+		result = -1;
+		goto cleanup;
+	}
 
-	printf("SEARCH KEY: val\n");
 	search = paramGet(params, "val");
-	printf("FOUND VALUE: %s\n\n", search->value);
+	if (strcmp("100", search->value) != 0)
+	{
+		fprintf(stderr, "\nExpected to find '%s' for key '%s' but got '%s' instead.\n",
+				"100",
+				"val",
+				search->value);
+		result = -1;
+		goto cleanup;
+	}
 
-	printf("SEARCH KEY: xyz\n");
 	search = paramGet(params, "xyz");
-	if (!search)
-		printf("KEY DOESN'T EXIST\n\n");
+	if (search != NULL)
+	{
+		fprintf(stderr, "\nExpected to find empty value for key '%s' but got '%s' instead.\n",
+				"xyz",
+				search->value);
+		result = -1;
+		goto cleanup;
+	}
 
+cleanup:
 	paramFree(params);
 	free(url);
-	return 0;
+	return result;
 }

@@ -60,8 +60,10 @@ int main() {
 			switch (header_parse_counter) {
 				case 0:
 					method = header_token;
+					break;
 				case 1:
 					urlRoute = header_token;
+					break;
 			}
 			header_token = strtok(NULL, " ");
 			header_parse_counter++;

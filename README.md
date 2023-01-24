@@ -16,5 +16,13 @@ Enter the root directory and use:
 
 Which should build the `libcerveurus.a` static library that can be linked to your server.
 
+## Running Tests
+To run the tests, go to the `build` folder and use  `make test CTEST_OUTPUT_ON_FAILURE=TRUE`.
+
 ## How to Use
-Will write more on usage once the project matures a bit more.
+
+### Development
+After running `make` inside your build folder, a `main` executable will be generated inside `build/src` and copy over the `templates/` and `static/` folders. Use `./src/main` (assuming you're inside the `build` folder) to run the server. By default it's on port `6969` then go to `localhost:6969` in your browser. This is the development/testing server that you can play around with.
+
+### Building a webserver
+Will write more detail once library is more mature.

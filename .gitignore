@@ -2,3 +2,4 @@ src/*.o
 *.o
 .cache/
 *swp*
+build
