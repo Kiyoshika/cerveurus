@@ -53,9 +53,9 @@ void http_set_response_body(
 		strncat(http_server->response, http_server->status_code, strlen(http_server->status_code));
 
 		// add response body (while accounting for the space we already took up by the response code
-		// NOTE: the -5 is for the four extra \r\n\r\n characters and a null terminator
-		size_t max_len = (size_t)HTTP_RESPONSE_BODY_LEN - strlen(http_server->status_code) - 5;
+		// NOTE: the -1 is for the null terminator
+		size_t max_len = (size_t)HTTP_RESPONSE_BODY_LEN - strlen(http_server->status_code) - 1;
 		strncat(http_server->response, body, max_len);
-		strncat(http_server->response, "\r\n\r\n", 5);
+		//strncat(http_server->response, "\r\n\r\n", 5);
 	}
 }

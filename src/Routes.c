@@ -3,11 +3,20 @@
 #include <string.h>
 #include <stdio.h>
 
-struct Route * initRoute(char* key, char* value) {
+struct Route * initRoute(
+		char* key, 
+		char* value,
+		void* user_data,
+		char* (*get_callback)(struct ParameterArray * params, void* user_data),
+		void (*post_callback)(struct ParameterArray * params, void* user_data, char* request_body))
+{
 	struct Route * temp = (struct Route *) malloc(sizeof(struct Route));
 
 	temp->key = key;
 	temp->value = value;
+	temp->get_callback = get_callback;
+	temp->post_callback = post_callback;
+	temp->user_data = user_data;
 
 	temp->left = temp->right = NULL;
 	return temp;
@@ -23,17 +32,23 @@ void inorder(struct Route* root)
     }
 }
 
-void addRoute(struct Route ** root, char* key, char* value) {
+void addRoute(
+		struct Route ** root, 
+		char* key, 
+		char* value,
+		void* user_data,
+		char* (*get_callback)(struct ParameterArray * params, void* user_data),
+		void (*post_callback)(struct ParameterArray * params, void* user_data, char* request_body)) {
 	if (*root == NULL) {
-		*root = initRoute(key, value);
+		*root = initRoute(key, value, user_data, get_callback, post_callback);
 	}
 	else if (strcmp(key, (*root)->key) == 0) {
 		printf("============ WARNING ============\n");
 		printf("A Route For \"%s\" Already Exists\n", key);
 	}else if (strcmp(key, (*root)->key) > 0) {
-		addRoute(&(*root)->right, key, value);
+		addRoute(&(*root)->right, key, value, user_data, get_callback, post_callback);
 	}else {
-		addRoute(&(*root)->left, key, value);
+		addRoute(&(*root)->left, key, value, user_data, get_callback, post_callback);
 	}
 }
 
@@ -50,5 +65,6 @@ struct Route * search(struct Route * root, char* key) {
 		return search(root->left, key);
 	}  
 
+	return NULL;
 }
 
