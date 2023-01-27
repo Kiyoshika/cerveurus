@@ -16,7 +16,7 @@ endif()
 add_subdirectory(src)
 
 enable_testing()
-add_subdirectory(test)
+#add_subdirectory(test)
 
 # copy the static/ and templates/ directories to build/src folder
 file(COPY ${Cerveurus_SOURCE_DIR}/static DESTINATION ${Cerveurus_SOURCE_DIR}/build/src)

@@ -5,7 +5,7 @@
 #include <string.h>
 
 // forward declaration
-struct ParameterArray;
+struct SortedArray;
 
 struct Route {
 	char* key;
@@ -13,10 +13,10 @@ struct Route {
 	void* user_data;
 
 	char* (*get_callback)(
-			struct ParameterArray * params, 
+			struct SortedArray * sarray, 
 			void* user_data);
 	void (*post_callback)(
-			struct ParameterArray * params,
+			struct SortedArray * sarray,
 			void* user_data,
 			char* request_body);
 
@@ -27,16 +27,16 @@ struct Route * initRoute(
 		char* key, 
 		char* value,
 		void* user_data,
-		char* (*get_callback)(struct ParameterArray*, void*),
-		void (*post_callback)(struct ParameterArray*, void*, char*));
+		char* (*get_callback)(struct SortedArray*, void*),
+		void (*post_callback)(struct SortedArray*, void*, char*));
 
 void addRoute(
 		struct Route ** root, 
 		char* key, 
 		char* value,
 		void* user_data,
-		char* (*get_callback)(struct ParameterArray*, void*),
-		void (*post_callback)(struct ParameterArray*, void*, char*));
+		char* (*get_callback)(struct SortedArray*, void*),
+		void (*post_callback)(struct SortedArray*, void*, char*));
 
 struct Route * search(struct Route * root, char * key);
 
