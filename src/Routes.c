@@ -7,8 +7,8 @@ struct Route * initRoute(
 		char* key, 
 		char* value,
 		void* user_data,
-		char* (*get_callback)(struct ParameterArray * params, void* user_data),
-		void (*post_callback)(struct ParameterArray * params, void* user_data, char* request_body))
+		char* (*get_callback)(struct SortedArray * sarray, void* user_data),
+		void (*post_callback)(struct SortedArray * sarray, void* user_data, char* request_body))
 {
 	struct Route * temp = (struct Route *) malloc(sizeof(struct Route));
 
@@ -37,8 +37,8 @@ void addRoute(
 		char* key, 
 		char* value,
 		void* user_data,
-		char* (*get_callback)(struct ParameterArray * params, void* user_data),
-		void (*post_callback)(struct ParameterArray * params, void* user_data, char* request_body)) {
+		char* (*get_callback)(struct SortedArray * params, void* user_data),
+		void (*post_callback)(struct SortedArray * params, void* user_data, char* request_body)) {
 	if (*root == NULL) {
 		*root = initRoute(key, value, user_data, get_callback, post_callback);
 	}

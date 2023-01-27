@@ -1,5 +1,5 @@
-add_library(cervparams Parameters.c)
-target_include_directories(cervparams PUBLIC ${Cerveurus_SOURCE_DIR}/include)
+add_library(cervsarray SortedArray.c)
+target_include_directories(cervsarray PUBLIC ${Cerveurus_SOURCE_DIR}/include)
 
 add_library(cervresponse Response.c)
 target_include_directories(cervresponse PUBLIC ${Cerveurus_SOURCE_DIR}/include)
@@ -11,7 +11,7 @@ target_include_directories(cervroutes PUBLIC ${Cerveurus_SOURCE_DIR}/include)
 add_library(cerveurus HTTP_Server.c)
 target_include_directories(cerveurus PUBLIC ${Cerveurus_SOURCE_DIR}/include)
 target_link_libraries(cerveurus
-	cervparams
+	cervsarray
 	cervresponse
 	cervroutes)
 
