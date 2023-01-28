@@ -13,10 +13,10 @@ struct Route {
 	void* user_data;
 
 	char* (*get_callback)(
-			struct SortedArray * sarray, 
+			struct SortedArray * params, 
 			void* user_data);
 	void (*post_callback)(
-			struct SortedArray * sarray,
+			struct SortedArray * params,
 			void* user_data,
 			char* request_body);
 
@@ -38,8 +38,10 @@ void addRoute(
 		char* (*get_callback)(struct SortedArray*, void*),
 		void (*post_callback)(struct SortedArray*, void*, char*));
 
-struct Route * search(struct Route * root, char * key);
+struct Route * search(
+		struct Route * root, 
+		char * key);
 
-void inorder(struct Route * root );
+void inorder(const struct Route * const root );
 
 #endif

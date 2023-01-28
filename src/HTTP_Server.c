@@ -324,3 +324,32 @@ void http_set_response_body(
 		strncat(http_server->response_body, response_body, max_len);
 	}
 }
+
+void http_add_route_template(
+		HTTP_Server* const http_server,
+		char* route_path,
+		char* template_file_name)
+{
+	if (!http_server->routes)
+		http_server->routes = initRoute(route_path, template_file_name, NULL, NULL, NULL);
+	else
+		addRoute(&http_server->routes, route_path, template_file_name, NULL, NULL, NULL);
+}
+
+void http_add_route_api(
+		HTTP_Server* const http_server,
+		char* route_path,
+		void* user_data,
+		char* (*get_callback)(
+			struct SortedArray* params, 
+			void* user_data),
+		void (*post_callback)(
+			struct SortedArray* params, 
+			void* user_data, 
+			char* request_body))
+{
+	if (!http_server->routes)
+		http_server->routes = initRoute(route_path, NULL, user_data, get_callback, post_callback);
+	else
+		addRoute(&http_server->routes, route_path, NULL, user_data, get_callback, post_callback);
+}

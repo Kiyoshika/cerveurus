@@ -40,17 +40,16 @@ int main() {
 	http_init(&http_server, 6969);
 
 	// registering Routes
-	// TODO: move adding routes into HTTP server (e.g., http_add_route())
-	// TODO: split these into addTemplateRoute and addApiRoute since
 	// a template route will never have get/post callbacks (they only return HTML).
-	http_server.routes = initRoute("/", "index.html", NULL, NULL, NULL); 
-	addRoute(&http_server.routes, "/about", "about.html", NULL, NULL, NULL);
-	addRoute(&http_server.routes, "/sth", "sth.html", NULL, NULL, NULL);
-	addRoute(&http_server.routes, "/chicken", "chicken.html", NULL, NULL, NULL);
+	// by default these will search the templates/ folder
+	http_add_route_template(&http_server, "/", "index.html");
+	http_add_route_template(&http_server, "/about", "about.html");
+	http_add_route_template(&http_server, "/sth", "sth.html");
+	http_add_route_template(&http_server, "/chicken", "chicken.html");
 
 	// TODO: might need to pass deallocators as well to free user data
 	char* my_str = strdup("hello there!");
-	addRoute(&http_server.routes, "/mystr", NULL, &my_str, &get_str, &set_str);
+	http_add_route_api(&http_server, "/mystr", &my_str, &get_str, &set_str);
 
 	printf("\n====================================\n");
 	printf("=========ALL AVAILABLE ROUTES========\n");
