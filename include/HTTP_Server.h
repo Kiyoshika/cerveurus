@@ -10,7 +10,6 @@
 
 // forward declaration
 struct SortedArray;
-struct Route;
 
 // note: please keep these in the same order as _status_code_text
 // as that's the corresponding lookup table
@@ -67,5 +66,21 @@ void http_set_response_body(
 		HTTP_Server* const http_server,
 		const char* body);
 
+// Add a route that renders a template
+// (always a GET request)
+void http_add_route_template(
+		HTTP_Server* const http_server,
+		char* route_path,
+		char* template_file_name);
+
+// Add a route that handles a custom callback
+// Supports GET and/or POST.
+// One route can have multiple request types at once (GET/POST).
+void http_add_route_api(
+		HTTP_Server* const http_server,
+		char* route_path,
+		void* user_data,
+		char* (*get_callback)(struct SortedArray*, void*),
+		void (*post_callback)(struct SortedArray*, void*, char*));
 
 #endif

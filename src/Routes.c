@@ -12,7 +12,7 @@ struct Route * initRoute(
 {
 	struct Route * temp = (struct Route *) malloc(sizeof(struct Route));
 
-	temp->key = key;
+	temp->key =  key;
 	temp->value = value;
 	temp->get_callback = get_callback;
 	temp->post_callback = post_callback;
@@ -22,7 +22,7 @@ struct Route * initRoute(
 	return temp;
 }
 
-void inorder(struct Route* root)
+void inorder(const struct Route* const root)
 {
 
     if (root != NULL) {
@@ -52,7 +52,9 @@ void addRoute(
 	}
 }
 
-struct Route * search(struct Route * root, char* key) {
+struct Route * search(
+		struct Route * root,
+		char* key) {
 	if (root == NULL) {
 		return NULL;
 	} 
