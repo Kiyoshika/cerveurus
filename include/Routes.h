@@ -10,43 +10,40 @@
 // forward declaration
 struct SortedArray;
 
-struct Route {
+// arguments passed to GET/POST/DELETE/etc. callback functions
+// that end user can reference when handling API requests.
+struct CallbackArgs
+{
+	enum http_status_code_e* status_code;
+	const struct SortedArray * const params;
+	const struct SortedArray * const headers;
+	void* user_data;
+	const char* const request_body;
+};
+
+struct Route
+{
 	char* key;
 	char* value;
 
 	void* user_data;
 	void (*user_data_dealloc)(void*);
 
-	char* (*get_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray * params, 
-			struct SortedArray * headers,
-			void* user_data);
-
-	void (*post_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray * params,
-			struct SortedArray * headers,
-			void* user_data,
-			char* request_body);
-
-	void (*delete_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray * params,
-			struct SortedArray * headers,
-			void* user_data,
-			char* request_body);
-
+	char* (*get_callback)(struct CallbackArgs * const args);
+	void (*post_callback)(struct CallbackArgs * const args);
+	void (*delete_callback)(struct CallbackArgs * const args);
+			
 	struct Route *left, *right;
 };
+
 struct Route * initRoute(
 		char* key, 
 		char* value,
 		void* user_data,
 		void (*user_data_dealloc)(void*),
-		char* (*get_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*),
-		void (*post_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*, char*),
-		void (*delete_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*, char*));
+		char* (*get_callback)(struct CallbackArgs * const args),
+		void (*post_callback)(struct CallbackArgs * const args),
+		void (*delete_callback)(struct CallbackArgs * const args));
 
 void addRoute(
 		struct Route ** root, 
@@ -54,9 +51,9 @@ void addRoute(
 		char* value,
 		void* user_data,
 		void (*user_data_dealloc)(void*),
-		char* (*get_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*),
-		void (*post_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*, char*),
-		void (*delete_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*, char*));
+		char* (*get_callback)(struct CallbackArgs * const args),
+		void (*post_callback)(struct CallbackArgs * const args),
+		void (*delete_callback)(struct CallbackArgs * const args));
 
 struct Route * search(
 		struct Route * root, 

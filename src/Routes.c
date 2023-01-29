@@ -9,23 +9,9 @@ struct Route * initRoute(
 		char* value,
 		void* user_data,
 		void (*user_data_dealloc)(void*),
-		char* (*get_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray * params, 
-			struct SortedArray * headers, 
-			void* user_data),
-		void (*post_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray * params, 
-			struct SortedArray * headers,
-			void* user_data, 
-			char* request_body),
-		void (*delete_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray * params,
-			struct SortedArray * headers,
-			void* user_data,
-			char* request_body))
+		char* (*get_callback)(struct CallbackArgs * const args),
+		void (*post_callback)(struct CallbackArgs * const args),
+		void (*delete_callback)(struct CallbackArgs * const args))
 {
 	struct Route * temp = (struct Route *) malloc(sizeof(struct Route));
 
@@ -78,23 +64,10 @@ void addRoute(
 		char* value,
 		void* user_data,
 		void (*user_data_dealloc)(void* user_data),
-		char* (*get_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray * params, 
-			struct SortedArray * headers,
-			void* user_data),
-		void (*post_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray * params, 
-			struct SortedArray * headers,
-			void* user_data, 
-			char* request_body),
-		void (*delete_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray * params,
-			struct SortedArray * headers,
-			void* user_data,
-			char* request_body)) {
+		char* (*get_callback)(struct CallbackArgs * const args),
+		void (*post_callback)(struct CallbackArgs * const args),
+		void (*delete_callback)(struct CallbackArgs * const args))
+ {
 	if (*root == NULL) {
 		*root = initRoute(key, value, user_data, user_data_dealloc, get_callback, post_callback, delete_callback);
 	}

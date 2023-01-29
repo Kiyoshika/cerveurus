@@ -108,41 +108,34 @@ static void http_render(
 	{
 		// by default all status codes will return 200 OK
 		enum http_status_code_e status_code = OK;
+		struct CallbackArgs args = {
+			.status_code = &status_code,
+			.params = http_server->params,
+			.headers = http_server->headers,
+			.user_data = destination->user_data,
+			.request_body = http_server->request_body
+		};
 
 		switch (http_server->request_type)
 		{
 
 			case GET:
 			{
-				http_server->response_body = strdup(destination->get_callback(
-																	&status_code,
-																	http_server->params, 
-																	http_server->headers, 
-																	destination->user_data));
+				http_server->response_body = strdup(destination->get_callback(&args));
 				http_send(http_server, status_code);
 			}
 			break;
 
 			case POST:
 			{
-				destination->post_callback(
-								&status_code,
-								http_server->params, 
-								http_server->headers, 
-								destination->user_data, 
-								http_server->request_body);
+				destination->post_callback(&args);
 				http_send(http_server, status_code);
 			}
 			break;
 
 			case DELETE:
 			{
-				destination->delete_callback(
-								&status_code,
-								http_server->params, 
-								http_server->headers, 
-								destination->user_data, 
-								http_server->request_body);
+				destination->delete_callback(&args);
 				http_send(http_server, status_code);
 			}
 			break;
@@ -394,23 +387,9 @@ void http_add_route_api(
 		char* route_path,
 		void* user_data,
 		void (*user_data_dealloc)(void* user_data),
-		char* (*get_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray* params, 
-			struct SortedArray* headers,
-			void* user_data),
-		void (*post_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray* params, 
-			struct SortedArray* headers,
-			void* user_data, 
-			char* request_body),
-		void (*delete_callback)(
-			enum http_status_code_e* status_code,
-			struct SortedArray* params,
-			struct SortedArray* headers,
-			void* user_data,
-			char* request_body))
+		char* (*get_callback)(struct CallbackArgs * const args),
+		void (*post_callback)(struct CallbackArgs * const args),
+		void (*delete_callback)(struct CallbackArgs * const args))
 {
 	if (!http_server->routes)
 		http_server->routes = initRoute(route_path, NULL, user_data, user_data_dealloc,  get_callback, post_callback, delete_callback);
