@@ -15,63 +15,37 @@
 #include "SortedArray.h"
 
 // each callback (GET/POST/DELETE) defaults to return 200 OK.
-// this can be changed by adjusting the pointer, e.g., *status_code = CREATED
+// this can be changed by adjusting the pointer, e.g., args->status_code = CREATED
 // see HTTP_Server.h for list of status codes
 
 // sample GET callback for /mystr (return the value of a local string)
-char* get_str(
-		enum http_status_code_e* status_code,
-		struct SortedArray * params, 
-		struct SortedArray * headers, 
-		void* user_data)
+char* get_str(struct CallbackArgs * const args)
 {
-	(void)status_code;
-	(void)params;
-	(void)headers;
-	return *(char**)user_data;
+	return *(char**)args->user_data;
 }
 
 // sample POST callback for /mystr (set the value of a local string)
-void set_str(
-		enum http_status_code_e* status_code,
-		struct SortedArray * params, 
-		struct SortedArray * headers, 
-		void* user_data, 
-		char* request_body)
+void set_str(struct CallbackArgs * const args)
 {
-	(void)status_code;
-	(void)params;
-	(void)headers;
-
 	// Our user_data is an address to a local char* variable.
 	// We cast to char** which holds the address and dereference + free before
 	// reallocating to the new string from the request_body
-	char** data = user_data;
+	char** data = args->user_data;
 	free(*data);
-	*data = strdup(request_body);
+	*data = strdup(args->request_body);
 
 	/* Example of how to pull a header value by key
 
-	struct KeyValuePair* find = sarray_get(headers, "MyHeader");
+	struct KeyValuePair* find = sarray_get(args->headers, "MyHeader");
 	*data = strdup(find->value);
 
 	*/
 }
 
 // sample DELETE callback for /mystr that just sets it to blank string
-void delete_str(
-		enum http_status_code_e* status_code,
-		struct SortedArray * params, 
-		struct SortedArray * headers, 
-		void* user_data, 
-		char* request_body)
+void delete_str(struct CallbackArgs * const args)
 {
-	(void)status_code;
-	(void)params;
-	(void)headers;
-	(void)request_body;
-
-	char** data = user_data;
+	char** data = args->user_data;
 	free(*data);
 	*data = strdup("");
 }
