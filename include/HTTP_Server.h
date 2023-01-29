@@ -81,9 +81,23 @@ void http_add_route_api(
 		char* route_path,
 		void* user_data,
 		void (*user_data_dealloc)(void*),
-		char* (*get_callback)(struct SortedArray*, struct SortedArray*, void*),
-		void (*post_callback)(struct SortedArray*, struct SortedArray*, void*, char*),
-		void (*delete_callback)(struct SortedArray*, struct SortedArray*, void*, char*));
+		char* (*get_callback)(
+			enum http_status_code_e*,
+			struct SortedArray*, 
+			struct SortedArray*, 
+			void*),
+		void (*post_callback)(
+			enum http_status_code_e*,
+			struct SortedArray*, 
+			struct SortedArray*, 
+			void*, 
+			char*),
+		void (*delete_callback)(
+			enum http_status_code_e*,
+			struct SortedArray*, 
+			struct SortedArray*, 
+			void*, 
+			char*));
 
 // cleanup memory allocated from server
 void http_free(HTTP_Server* http_server);

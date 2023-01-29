@@ -106,27 +106,44 @@ static void http_render(
 	// handle API response (GET/POST)
 	else
 	{
+		// by default all status codes will return 200 OK
+		enum http_status_code_e status_code = OK;
+
 		switch (http_server->request_type)
 		{
+
 			case GET:
 			{
-				//free(http_server->response_body);
-				http_server->response_body = strdup(destination->get_callback(http_server->params, http_server->headers, destination->user_data));
-				http_send(http_server, OK);
+				http_server->response_body = strdup(destination->get_callback(
+																	&status_code,
+																	http_server->params, 
+																	http_server->headers, 
+																	destination->user_data));
+				http_send(http_server, status_code);
 			}
 			break;
 
 			case POST:
 			{
-				destination->post_callback(http_server->params, http_server->headers, destination->user_data, http_server->request_body);
-				http_send(http_server, OK);
+				destination->post_callback(
+								&status_code,
+								http_server->params, 
+								http_server->headers, 
+								destination->user_data, 
+								http_server->request_body);
+				http_send(http_server, status_code);
 			}
 			break;
 
 			case DELETE:
 			{
-				destination->delete_callback(http_server->params, http_server->headers, destination->user_data, http_server->request_body);
-				http_send(http_server, OK);
+				destination->delete_callback(
+								&status_code,
+								http_server->params, 
+								http_server->headers, 
+								destination->user_data, 
+								http_server->request_body);
+				http_send(http_server, status_code);
 			}
 			break;
 			
@@ -378,15 +395,18 @@ void http_add_route_api(
 		void* user_data,
 		void (*user_data_dealloc)(void* user_data),
 		char* (*get_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray* params, 
 			struct SortedArray* headers,
 			void* user_data),
 		void (*post_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray* params, 
 			struct SortedArray* headers,
 			void* user_data, 
 			char* request_body),
 		void (*delete_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray* params,
 			struct SortedArray* headers,
 			void* user_data,

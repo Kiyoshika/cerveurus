@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+// I need the enums defined in here
+#include "HTTP_Server.h"
+
 // forward declaration
 struct SortedArray;
 
@@ -15,17 +18,20 @@ struct Route {
 	void (*user_data_dealloc)(void*);
 
 	char* (*get_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray * params, 
 			struct SortedArray * headers,
 			void* user_data);
 
 	void (*post_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray * params,
 			struct SortedArray * headers,
 			void* user_data,
 			char* request_body);
 
 	void (*delete_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray * params,
 			struct SortedArray * headers,
 			void* user_data,
@@ -38,9 +44,9 @@ struct Route * initRoute(
 		char* value,
 		void* user_data,
 		void (*user_data_dealloc)(void*),
-		char* (*get_callback)(struct SortedArray*, struct SortedArray*, void*),
-		void (*post_callback)(struct SortedArray*, struct SortedArray*, void*, char*),
-		void (*delete_callback)(struct SortedArray*, struct SortedArray*, void*, char*));
+		char* (*get_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*),
+		void (*post_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*, char*),
+		void (*delete_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*, char*));
 
 void addRoute(
 		struct Route ** root, 
@@ -48,9 +54,9 @@ void addRoute(
 		char* value,
 		void* user_data,
 		void (*user_data_dealloc)(void*),
-		char* (*get_callback)(struct SortedArray*, struct SortedArray*, void*),
-		void (*post_callback)(struct SortedArray*, struct SortedArray*, void*, char*),
-		void (*delete_callback)(struct SortedArray*, struct SortedArray*, void*, char*));
+		char* (*get_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*),
+		void (*post_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*, char*),
+		void (*delete_callback)(enum http_status_code_e*, struct SortedArray*, struct SortedArray*, void*, char*));
 
 struct Route * search(
 		struct Route * root, 

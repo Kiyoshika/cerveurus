@@ -1,4 +1,5 @@
 #include "Routes.h"
+#include "HTTP_Server.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -9,15 +10,18 @@ struct Route * initRoute(
 		void* user_data,
 		void (*user_data_dealloc)(void*),
 		char* (*get_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray * params, 
 			struct SortedArray * headers, 
 			void* user_data),
 		void (*post_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray * params, 
 			struct SortedArray * headers,
 			void* user_data, 
 			char* request_body),
 		void (*delete_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray * params,
 			struct SortedArray * headers,
 			void* user_data,
@@ -75,15 +79,18 @@ void addRoute(
 		void* user_data,
 		void (*user_data_dealloc)(void* user_data),
 		char* (*get_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray * params, 
 			struct SortedArray * headers,
 			void* user_data),
 		void (*post_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray * params, 
 			struct SortedArray * headers,
 			void* user_data, 
 			char* request_body),
 		void (*delete_callback)(
+			enum http_status_code_e* status_code,
 			struct SortedArray * params,
 			struct SortedArray * headers,
 			void* user_data,

@@ -14,17 +14,32 @@
 #include "Response.h"
 #include "SortedArray.h"
 
+// each callback (GET/POST/DELETE) defaults to return 200 OK.
+// this can be changed by adjusting the pointer, e.g., *status_code = CREATED
+// see HTTP_Server.h for list of status codes
+
 // sample GET callback for /mystr (return the value of a local string)
-char* get_str(struct SortedArray * params, struct SortedArray * headers, void* user_data)
+char* get_str(
+		enum http_status_code_e* status_code,
+		struct SortedArray * params, 
+		struct SortedArray * headers, 
+		void* user_data)
 {
+	(void)status_code;
 	(void)params;
 	(void)headers;
 	return *(char**)user_data;
 }
 
 // sample POST callback for /mystr (set the value of a local string)
-void set_str(struct SortedArray * params, struct SortedArray * headers, void* user_data, char* request_body)
+void set_str(
+		enum http_status_code_e* status_code,
+		struct SortedArray * params, 
+		struct SortedArray * headers, 
+		void* user_data, 
+		char* request_body)
 {
+	(void)status_code;
 	(void)params;
 	(void)headers;
 
@@ -44,8 +59,14 @@ void set_str(struct SortedArray * params, struct SortedArray * headers, void* us
 }
 
 // sample DELETE callback for /mystr that just sets it to blank string
-void delete_str(struct SortedArray * params, struct SortedArray * headers, void* user_data, char* request_body)
+void delete_str(
+		enum http_status_code_e* status_code,
+		struct SortedArray * params, 
+		struct SortedArray * headers, 
+		void* user_data, 
+		char* request_body)
 {
+	(void)status_code;
 	(void)params;
 	(void)headers;
 	(void)request_body;
