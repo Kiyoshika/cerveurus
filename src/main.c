@@ -34,6 +34,13 @@ void set_str(struct SortedArray * params, void* user_data, char* request_body)
 	*data = strdup(request_body);
 }
 
+void dealloc(void* user_data)
+{
+	char** data = user_data;
+	free(*data);
+	*data = NULL;
+}
+
 int main() {
 	// initiate HTTP_Server
 	HTTP_Server http_server;
@@ -47,9 +54,10 @@ int main() {
 	http_add_route_template(&http_server, "/sth", "sth.html");
 	http_add_route_template(&http_server, "/chicken", "chicken.html");
 
-	// TODO: might need to pass deallocators as well to free user data
+	// this route manages a string resource. We also pass a deallocator
+	// that the server can clean up when it's killed (e.g., Ctrl+C)
 	char* my_str = strdup("hello there!");
-	http_add_route_api(&http_server, "/mystr", &my_str, &get_str, &set_str);
+	http_add_route_api(&http_server, "/mystr", &my_str, &dealloc, &get_str, &set_str);
 
 	printf("\n====================================\n");
 	printf("=========ALL AVAILABLE ROUTES========\n");

@@ -80,7 +80,11 @@ void http_add_route_api(
 		HTTP_Server* const http_server,
 		char* route_path,
 		void* user_data,
+		void (*user_data_dealloc)(void*),
 		char* (*get_callback)(struct SortedArray*, void*),
 		void (*post_callback)(struct SortedArray*, void*, char*));
+
+// cleanup memory allocated from server
+void http_free(HTTP_Server* http_server);
 
 #endif

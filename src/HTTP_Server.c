@@ -22,7 +22,24 @@ const char _status_code_text[8][50] = {
 	"HTTP/1.1 501 Not implemented\r\n\r\n"
 };
 
+// maintain a global pointer so we can clean it up when handling interrupt
+struct HTTP_Server* http_server_global = NULL;
+
+void http_cleanup(int sig)
+{
+	signal(sig, SIG_IGN);
+	http_free(http_server_global);
+	exit(0);
+}
+
 void http_init(HTTP_Server * const http_server, int port) {
+
+	// hold a global pointer to server so we can use it in the interrupt
+	http_server_global = http_server;
+
+	// create interrupt for server to clean up resources when using Ctrl+C
+	signal(SIGINT, http_cleanup);
+
 	http_server->port = port;
 
 	int server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -331,15 +348,16 @@ void http_add_route_template(
 		char* template_file_name)
 {
 	if (!http_server->routes)
-		http_server->routes = initRoute(route_path, template_file_name, NULL, NULL, NULL);
+		http_server->routes = initRoute(route_path, template_file_name, NULL, NULL, NULL, NULL);
 	else
-		addRoute(&http_server->routes, route_path, template_file_name, NULL, NULL, NULL);
+		addRoute(&http_server->routes, route_path, template_file_name, NULL, NULL, NULL, NULL);
 }
 
 void http_add_route_api(
 		HTTP_Server* const http_server,
 		char* route_path,
 		void* user_data,
+		void (*user_data_dealloc)(void* user_data),
 		char* (*get_callback)(
 			struct SortedArray* params, 
 			void* user_data),
@@ -349,7 +367,29 @@ void http_add_route_api(
 			char* request_body))
 {
 	if (!http_server->routes)
-		http_server->routes = initRoute(route_path, NULL, user_data, get_callback, post_callback);
+		http_server->routes = initRoute(route_path, NULL, user_data, user_data_dealloc,  get_callback, post_callback);
 	else
-		addRoute(&http_server->routes, route_path, NULL, user_data, get_callback, post_callback);
+		addRoute(&http_server->routes, route_path, NULL, user_data, user_data_dealloc, get_callback, post_callback);
+}
+
+void http_free(HTTP_Server* const http_server)
+{
+	if (http_server->response_body)
+		free(http_server->response_body);
+
+	if (http_server->request_body)
+		free(http_server->request_body);
+
+	if (http_server->params)
+		sarray_free(&http_server->params);
+
+	if (http_server->headers)
+		sarray_free(&http_server->headers);
+
+	if (http_server->routes)
+		freeRoutes(&http_server->routes);
+	free(http_server->routes);
+
+	// NOTE: the HTTP server itself is not heap-allocated
+	// so we don't need to free(http_server)
 }

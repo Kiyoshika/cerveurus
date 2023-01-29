@@ -10,11 +10,14 @@ struct SortedArray;
 struct Route {
 	char* key;
 	char* value;
+
 	void* user_data;
+	void (*user_data_dealloc)(void*);
 
 	char* (*get_callback)(
 			struct SortedArray * params, 
 			void* user_data);
+
 	void (*post_callback)(
 			struct SortedArray * params,
 			void* user_data,
@@ -27,6 +30,7 @@ struct Route * initRoute(
 		char* key, 
 		char* value,
 		void* user_data,
+		void (*user_data_dealloc)(void*),
 		char* (*get_callback)(struct SortedArray*, void*),
 		void (*post_callback)(struct SortedArray*, void*, char*));
 
@@ -35,6 +39,7 @@ void addRoute(
 		char* key, 
 		char* value,
 		void* user_data,
+		void (*user_data_dealloc)(void*),
 		char* (*get_callback)(struct SortedArray*, void*),
 		void (*post_callback)(struct SortedArray*, void*, char*));
 
@@ -43,5 +48,7 @@ struct Route * search(
 		char * key);
 
 void inorder(const struct Route * const root );
+
+void freeRoutes(struct Route ** root);
 
 #endif
