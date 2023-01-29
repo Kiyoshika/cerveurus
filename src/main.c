@@ -43,6 +43,18 @@ void set_str(struct SortedArray * params, struct SortedArray * headers, void* us
 	*/
 }
 
+// sample DELETE callback for /mystr that just sets it to blank string
+void delete_str(struct SortedArray * params, struct SortedArray * headers, void* user_data, char* request_body)
+{
+	(void)params;
+	(void)headers;
+	(void)request_body;
+
+	char** data = user_data;
+	free(*data);
+	*data = strdup("");
+}
+
 void dealloc(void* user_data)
 {
 	char** data = user_data;
@@ -65,8 +77,9 @@ int main() {
 
 	// this route manages a string resource. We also pass a deallocator
 	// that the server can clean up when it's killed (e.g., Ctrl+C)
+	// NOTE that you don't need to provide ALL callbacks, only the ones you want.
 	char* my_str = strdup("hello there!");
-	http_add_route_api(&http_server, "/mystr", &my_str, &dealloc, &get_str, &set_str);
+	http_add_route_api(&http_server, "/mystr", &my_str, &dealloc, &get_str, &set_str, &delete_str);
 
 	printf("\n====================================\n");
 	printf("=========ALL AVAILABLE ROUTES========\n");

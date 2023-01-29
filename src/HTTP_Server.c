@@ -69,12 +69,17 @@ void http_init(HTTP_Server * const http_server, int port) {
 
 static void http_send(
 		HTTP_Server* http_server,
-		enum http_status_code_e status_code,
-		const char* response_body)
+		enum http_status_code_e status_code)
 {
 	http_set_status_code(http_server, status_code);
-	http_set_response_body(http_server, response_body);
+	http_prepare_response(http_server);
 	send(http_server->client_socket, http_server->response_body, strlen(http_server->response_body), 0);
+
+	free(http_server->response_body);
+	http_server->response_body = NULL;
+
+	free(http_server->request_body);
+	http_server->request_body = NULL;
 }
 
 static void http_render(
@@ -85,39 +90,49 @@ static void http_render(
 
 	if (destination == NULL)
 	{
-		char* response_data = render_static_file("templates/404.html");
-		http_send(http_server, NOT_FOUND, response_data);
+		http_server->response_body = render_static_file("templates/404.html");
+		http_send(http_server, NOT_FOUND);
 	}
 
 	// render static template HTML file
 	else if (destination->value)
 	{
+		free(http_server->response_body);
 		strcat(template_path, "templates/");
 		strcat(template_path, destination->value);
-		char* response_data = render_static_file(template_path);
-		http_send(http_server, OK, response_data);
-		free(response_data);
+		http_server->response_body = render_static_file(template_path);
+		http_send(http_server, OK);
 	}
 	// handle API response (GET/POST)
 	else
 	{
-		if (http_server->request_type == GET)
+		switch (http_server->request_type)
 		{
-			char* response_data = destination->get_callback(http_server->params, http_server->headers, destination->user_data);
-			http_send(http_server, OK, response_data);
-		}
-		// TODO: there's a really annoying issue with sending POST requests via cURL/postman
-		// where you have to refresh the site 1-2 times before it goes through.
-		// Currently have no idea why this happens...
-		// Doing the requests using fetch() in javascript are instantaneous
-		else if (http_server->request_type == POST)
-		{
-			destination->post_callback(http_server->params, http_server->headers, destination->user_data, http_server->request_body);
-			http_send(http_server, OK, "");
-		}
-		else if (http_server->request_type == DELETE)
-		{
-			// TODO:
+			case GET:
+			{
+				//free(http_server->response_body);
+				http_server->response_body = strdup(destination->get_callback(http_server->params, http_server->headers, destination->user_data));
+				http_send(http_server, OK);
+			}
+			break;
+
+			case POST:
+			{
+				destination->post_callback(http_server->params, http_server->headers, destination->user_data, http_server->request_body);
+				http_send(http_server, OK);
+			}
+			break;
+
+			case DELETE:
+			{
+				destination->delete_callback(http_server->params, http_server->headers, destination->user_data, http_server->request_body);
+				http_send(http_server, OK);
+			}
+			break;
+			
+			default:
+				printf("\n\n==== WARNING ====\nUnsupported request type.");
+				break;
 		}
 	}
 }
@@ -319,15 +334,15 @@ void http_set_status_code(
 	memcpy(http_server->status_code, _status, strlen(_status));
 }
 
-void http_set_response_body(
-		HTTP_Server* const http_server,
-		const char* response_body)
+void http_prepare_response(
+		HTTP_Server* const http_server)
 {
-	if (response_body)
+	if (http_server->response_body)
 	{
 		// allocate enough memory for response
+		char* response_data = strdup(http_server->response_body);
 		free(http_server->response_body);
-		http_server->response_body = calloc(strlen(http_server->status_code) + strlen(response_body) + 1, sizeof(char));
+		http_server->response_body = calloc(strlen(http_server->status_code) + strlen(response_data) + 1, sizeof(char));
 		if (!http_server->response_body)
 		{
 			// TODO: throw some type of error here
@@ -338,8 +353,12 @@ void http_set_response_body(
 		// add response body (while accounting for the space we already took up by the response code
 		// NOTE: the -1 is for the null terminator
 		size_t max_len = (size_t)HTTP_RESPONSE_BODY_LEN - strlen(http_server->status_code) - 1;
-		strncat(http_server->response_body, response_body, max_len);
+		strncat(http_server->response_body, response_data, max_len);
+		free(response_data);
+		response_data = NULL;
 	}
+	else
+		http_server->response_body = strdup(http_server->status_code);
 }
 
 void http_add_route_template(
@@ -348,9 +367,9 @@ void http_add_route_template(
 		char* template_file_name)
 {
 	if (!http_server->routes)
-		http_server->routes = initRoute(route_path, template_file_name, NULL, NULL, NULL, NULL);
+		http_server->routes = initRoute(route_path, template_file_name, NULL, NULL, NULL, NULL, NULL);
 	else
-		addRoute(&http_server->routes, route_path, template_file_name, NULL, NULL, NULL, NULL);
+		addRoute(&http_server->routes, route_path, template_file_name, NULL, NULL, NULL, NULL, NULL);
 }
 
 void http_add_route_api(
@@ -366,12 +385,17 @@ void http_add_route_api(
 			struct SortedArray* params, 
 			struct SortedArray* headers,
 			void* user_data, 
+			char* request_body),
+		void (*delete_callback)(
+			struct SortedArray* params,
+			struct SortedArray* headers,
+			void* user_data,
 			char* request_body))
 {
 	if (!http_server->routes)
-		http_server->routes = initRoute(route_path, NULL, user_data, user_data_dealloc,  get_callback, post_callback);
+		http_server->routes = initRoute(route_path, NULL, user_data, user_data_dealloc,  get_callback, post_callback, delete_callback);
 	else
-		addRoute(&http_server->routes, route_path, NULL, user_data, user_data_dealloc, get_callback, post_callback);
+		addRoute(&http_server->routes, route_path, NULL, user_data, user_data_dealloc, get_callback, post_callback, delete_callback);
 }
 
 void http_free(HTTP_Server* const http_server)

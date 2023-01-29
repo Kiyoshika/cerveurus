@@ -62,9 +62,9 @@ void http_set_status_code(
 		HTTP_Server* const http_server, 
 		const enum http_status_code_e);
 
-void http_set_response_body(
-		HTTP_Server* const http_server,
-		const char* body);
+// Prepare the response body to send to client
+void http_prepare_response(
+		HTTP_Server* const http_server);
 
 // Add a route that renders a template
 // (always a GET request)
@@ -82,7 +82,8 @@ void http_add_route_api(
 		void* user_data,
 		void (*user_data_dealloc)(void*),
 		char* (*get_callback)(struct SortedArray*, struct SortedArray*, void*),
-		void (*post_callback)(struct SortedArray*, struct SortedArray*, void*, char*));
+		void (*post_callback)(struct SortedArray*, struct SortedArray*, void*, char*),
+		void (*delete_callback)(struct SortedArray*, struct SortedArray*, void*, char*));
 
 // cleanup memory allocated from server
 void http_free(HTTP_Server* http_server);
