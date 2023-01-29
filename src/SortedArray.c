@@ -109,11 +109,11 @@ void sarray_clear(struct SortedArray * sarray)
 	sarray->n_members = 0;
 }
 
-void sarray_free(struct SortedArray * sarray)
+void sarray_free(struct SortedArray ** sarray)
 {
-	sarray_clear(sarray);
-	free(sarray->item);
-	sarray->item = NULL;
-	free(sarray);
-	sarray = NULL;
+	sarray_clear(*sarray);
+	free((*sarray)->item);
+	(*sarray)->item = NULL;
+	free(*sarray);
+	*sarray = NULL;
 }

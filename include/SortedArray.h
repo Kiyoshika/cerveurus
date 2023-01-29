@@ -50,6 +50,6 @@ struct KeyValuePair * sarray_get(
 		struct SortedArray * sarray,
 		const char* key);
 
-void sarray_free(struct SortedArray * sarray);
+void sarray_free(struct SortedArray ** sarray);
 
 #endif
