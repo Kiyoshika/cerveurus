@@ -15,16 +15,18 @@
 #include "SortedArray.h"
 
 // sample GET callback for /mystr (return the value of a local string)
-char* get_str(struct SortedArray * params, void* user_data)
+char* get_str(struct SortedArray * params, struct SortedArray * headers, void* user_data)
 {
 	(void)params;
+	(void)headers;
 	return *(char**)user_data;
 }
 
 // sample POST callback for /mystr (set the value of a local string)
-void set_str(struct SortedArray * params, void* user_data, char* request_body)
+void set_str(struct SortedArray * params, struct SortedArray * headers, void* user_data, char* request_body)
 {
 	(void)params;
+	(void)headers;
 
 	// Our user_data is an address to a local char* variable.
 	// We cast to char** which holds the address and dereference + free before
@@ -32,6 +34,13 @@ void set_str(struct SortedArray * params, void* user_data, char* request_body)
 	char** data = user_data;
 	free(*data);
 	*data = strdup(request_body);
+
+	/* Example of how to pull a header value by key
+
+	struct KeyValuePair* find = sarray_get(headers, "MyHeader");
+	*data = strdup(find->value);
+
+	*/
 }
 
 void dealloc(void* user_data)

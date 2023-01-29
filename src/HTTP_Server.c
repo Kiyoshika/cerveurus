@@ -103,7 +103,7 @@ static void http_render(
 	{
 		if (http_server->request_type == GET)
 		{
-			char* response_data = destination->get_callback(http_server->params, destination->user_data);
+			char* response_data = destination->get_callback(http_server->params, http_server->headers, destination->user_data);
 			http_send(http_server, OK, response_data);
 		}
 		// TODO: there's a really annoying issue with sending POST requests via cURL/postman
@@ -112,7 +112,7 @@ static void http_render(
 		// Doing the requests using fetch() in javascript are instantaneous
 		else if (http_server->request_type == POST)
 		{
-			destination->post_callback(http_server->params, destination->user_data, http_server->request_body);
+			destination->post_callback(http_server->params, http_server->headers, destination->user_data, http_server->request_body);
 			http_send(http_server, OK, "");
 		}
 		else if (http_server->request_type == DELETE)
@@ -360,9 +360,11 @@ void http_add_route_api(
 		void (*user_data_dealloc)(void* user_data),
 		char* (*get_callback)(
 			struct SortedArray* params, 
+			struct SortedArray* headers,
 			void* user_data),
 		void (*post_callback)(
 			struct SortedArray* params, 
+			struct SortedArray* headers,
 			void* user_data, 
 			char* request_body))
 {
