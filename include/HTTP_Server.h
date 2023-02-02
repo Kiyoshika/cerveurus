@@ -74,6 +74,12 @@ void http_add_route_template(
 		char* route_path,
 		char* template_file_name);
 
+// Add a route that renders a static file (e.g., css or js)
+// (always a GET request and not meant to be fetched explicitly by user)
+void http_add_route_static(
+		HTTP_Server* const http_server,
+		char* static_file_name);
+
 // Add a route that handles a custom callback
 // Supports GET and/or POST.
 // One route can have multiple request types at once (GET/POST).

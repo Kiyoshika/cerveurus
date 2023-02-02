@@ -94,12 +94,19 @@ static void http_render(
 		http_send(http_server, NOT_FOUND);
 	}
 
-	// render static template HTML file
+	// render template HTML file or static CSS/JS
 	else if (destination->value)
 	{
+		// the static/ url comes in with a slash in the beginning so we chop it off
 		free(http_server->response_body);
-		strcat(template_path, "templates/");
-		strcat(template_path, destination->value);
+		if (strncmp(destination->value, "/static/", 8) == 0)
+			for (size_t i = 1; i < strlen(destination->value); ++i)
+				template_path[i-1] = destination->value[i];
+		else
+		{
+			strcat(template_path, "templates/");
+			strcat(template_path, destination->value);
+		}
 		http_server->response_body = render_static_file(template_path);
 		http_send(http_server, OK);
 	}
@@ -109,6 +116,7 @@ static void http_render(
 		// by default all status codes will return 200 OK
 		enum http_status_code_e status_code = OK;
 		struct CallbackArgs args = {
+			.url = destination->value,
 			.status_code = &status_code,
 			.params = http_server->params,
 			.headers = http_server->headers,
@@ -381,6 +389,19 @@ void http_add_route_template(
 	else
 		addRoute(&http_server->routes, route_path, template_file_name, NULL, NULL, NULL, NULL, NULL);
 }
+
+void http_add_route_static(
+		HTTP_Server* const http_server,
+		char* static_file_path)
+{
+	// for static files we set the key/value to be the same which is just the full path to the static file
+	// (so we can search it by key and pass the value (full path) to render on client side)
+	if (!http_server->routes)
+		http_server->routes = initRoute(static_file_path, static_file_path, NULL, NULL, NULL, NULL, NULL);
+	else
+		addRoute(&http_server->routes, static_file_path, static_file_path, NULL, NULL, NULL, NULL, NULL);
+}
+
 
 void http_add_route_api(
 		HTTP_Server* const http_server,

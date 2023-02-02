@@ -70,6 +70,12 @@ int main() {
 	http_add_route_template(&http_server, "/sth", "sth.html");
 	http_add_route_template(&http_server, "/chicken", "chicken.html");
 
+	// registering static files (css/js files)
+	// this will search the static/ folder which we can reference in HTML like
+	// <link rel = "stylesheet" href = "static/index.css"/>
+	http_add_route_static(&http_server, "/static/index.css");
+	http_add_route_static(&http_server, "/static/index2.css"); // used in "/about" page
+
 	// this route manages a string resource. We also pass a deallocator
 	// that the server can clean up when it's killed (e.g., Ctrl+C)
 	// NOTE that you don't need to provide ALL callbacks, only the ones you want.

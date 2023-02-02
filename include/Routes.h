@@ -14,6 +14,7 @@ struct SortedArray;
 // that end user can reference when handling API requests.
 struct CallbackArgs
 {
+	char* url;
 	enum http_status_code_e* status_code;
 	const struct SortedArray * const params;
 	const struct SortedArray * const headers;
