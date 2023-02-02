@@ -1,4 +1,5 @@
 #include "Routes.h"
+#include "Response.h"
 #include "HTTP_Server.h"
 #include <stdlib.h>
 #include <string.h>
@@ -98,4 +99,3 @@ struct Route * search(
 
 	return NULL;
 }
-
