@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10.0)
 project(Cerveurus C)
 
+# build cJSON dependency
+add_subdirectory(ext/cJSON)
+
 set(CMAKE_C_STANDARD 99)
 
 include(CTest)

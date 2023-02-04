@@ -1,0 +1,3 @@
+[submodule "ext/cJSON"]
+	path = ext/cJSON
+	url = git@github.com:DaveGamble/cJSON.git
