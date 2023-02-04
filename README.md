@@ -8,7 +8,7 @@ I feel like the original project is pretty inactive and there are pull requests 
 The original name `cerveur` reminded me of `cerberus` so I'm naming it `cerveurus`.
 
 ## Dependencies
-I included [cJSON]() as a git submodule to handle parsing JSON requests/reponses. 
+I included [cJSON](https://github.com/DaveGamble/cJSON) as a git submodule to handle parsing JSON requests/reponses. 
 
 You MUST use the `--recursive` flag when cloning this repo. See below section.
 
