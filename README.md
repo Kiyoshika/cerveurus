@@ -7,10 +7,23 @@ I feel like the original project is pretty inactive and there are pull requests 
 ## Why call it cerveurus?
 The original name `cerveur` reminded me of `cerberus` so I'm naming it `cerveurus`.
 
+## Dependencies
+I included [cJSON]() as a git submodule to handle parsing JSON requests/reponses. 
+
+You MUST use the `--recursive` flag when cloning this repo. See below section.
+
 ## How to Build from Source
 The original project used plain Makefiles but I'm a fan of CMake, so I will use that as the build system for this fork.
 
-Enter the root directory and use:
+This includes submodules so please clone the repo with:
+* `git clone --recursive git@github.com:Kiyoshika/cerveurus.git`
+
+Or if you forget to clone recursively you can use:
+* `git submodule init`
+* `git submodule update`
+Which should fetch the submodules.
+
+After cloning, enter the root directory and use:
 * `mkdir build && cd build`
 * `cmake .. && make`
 
@@ -26,5 +39,5 @@ After running `make` inside your build folder, a `main` executable will be gener
 
 When killing the server (e.g., Ctrl+C) you may need to wait ~10 seconds and/or kill the server a few times for it to pick up a connection again (at least, this has been my experience...)
 
-### Building a webserver
+### User Guide 
 Will write more detail once library is more mature.
