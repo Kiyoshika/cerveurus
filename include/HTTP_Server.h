@@ -18,12 +18,21 @@ enum http_status_code_e
 {
 	OK = 0,
 	CREATED,
+	ACCEPTED,
+	NO_CONTENT,
+	FOUND,
+	NOT_MODIFIED,
 	BAD_REQUEST,
 	UNAUTHORIZED,
 	FORBIDDEN,
 	NOT_FOUND,
+	METHOD_NOT_ALLOWED,
+	NOT_ACCEPTABLE,
+	REQUEST_TIMEOUT,
+	UNSUPPORTED_MEDIA_TYPE,
 	INTERNAL_ERROR,
-	NOT_IMPLEMENTED
+	NOT_IMPLEMENTED,
+	INSUFFICIENT_STORAGE
 };
 
 enum http_request_type_e
@@ -34,7 +43,7 @@ enum http_request_type_e
 };
 
 // defined in HTTP_Server.c
-extern const char _status_code_text[8][50];
+extern const char _status_code_text[17][50];
 
 typedef struct HTTP_Server {
 	int client_socket;

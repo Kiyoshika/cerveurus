@@ -11,15 +11,24 @@
 #include <signal.h>
 
 // pulled these from https://www.w3.org/Protocols/HTTP/HTRESP.html
-const char _status_code_text[8][50] = {
+const char _status_code_text[17][50] = {
 	"HTTP/1.1 200 OK\r\n\r\n",
 	"HTTP/1.1 201 CREATED\r\n\r\n",
+	"HTTP/1.1 202 Accepted\r\n\r\n",
+	"HTTP/1.1 204 No Content\r\n\r\n",
+	"HTTP/1.1 302 Found\r\n\r\n",
+	"HTTP/1.1 304 Not Modified\r\n\r\n",
 	"HTTP/1.1 400 Bad request\r\n\r\n",
 	"HTTP/1.1 401 Unauthorized\r\n\r\n",
 	"HTTP/1.1 403 Forbidden\r\n\r\n",
 	"HTTP/1.1 404 Not found\r\n\r\n",
+	"HTTP/1.1 405 Method Not Allowed\r\n\r\n",
+	"HTTP/1.1 406 Not Acceptable\r\n\r\n",
+	"HTTP/1.1 408 Request Timeout\r\n\r\n",
+	"HTTP/1.1 415 Unsupported Media Type\r\n\r\n",
 	"HTTP/1.1 500 Internal Error\r\n\r\n",
-	"HTTP/1.1 501 Not implemented\r\n\r\n"
+	"HTTP/1.1 501 Not implemented\r\n\r\n",
+	"HTTP/1.1 507 Insufficient Storage\r\n\r\n"
 };
 
 // maintain a global pointer so we can clean it up when handling interrupt
