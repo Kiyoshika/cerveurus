@@ -90,7 +90,6 @@ void http_add_route_static(
 		char* static_file_name);
 
 // Add a route that handles a custom callback
-// Supports GET and/or POST.
 // One route can have multiple request types at once (GET/POST).
 void http_add_route_api(
 		HTTP_Server* const http_server,
@@ -99,6 +98,30 @@ void http_add_route_api(
 		void (*user_data_dealloc)(void*),
 		char* (*get_callback)(struct CallbackArgs * const args),
 		void (*post_callback)(struct CallbackArgs * const args),
+		void (*delete_callback)(struct CallbackArgs * const args));
+
+// Add route that handles GET request
+void http_add_route_GET(
+		HTTP_Server* const http_server,
+		char* route_path,
+		void* user_data,
+		void (*user_data_dealloc)(void*),
+		char* (*get_callback)(struct CallbackArgs * const args));
+
+// Add route that handles POST request
+void http_add_route_POST(
+		HTTP_Server* const http_server,
+		char* route_path,
+		void* user_data,
+		void (*user_data_dealloc)(void*),
+		void (*post_callback)(struct CallbackArgs * const args));
+
+// Add route that handles DELETE request
+void http_add_route_DELETE(
+		HTTP_Server* const http_server,
+		char* route_path,
+		void* user_data,
+		void (*user_data_dealloc)(void*),
 		void (*delete_callback)(struct CallbackArgs * const args));
 
 // cleanup memory allocated from server
