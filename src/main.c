@@ -13,6 +13,7 @@
 #include "Routes.h"
 #include "Response.h"
 #include "SortedArray.h"
+#include "SQL.h"
 
 // each callback (GET/POST/DELETE) defaults to return 200 OK.
 // this can be changed by adjusting the pointer, e.g., args->status_code = CREATED
@@ -61,6 +62,19 @@ void dealloc(void* user_data)
 }
 
 int main() {
+
+	// this is just to showcase the SQL find & replace utility function,
+	// it's not actually used in this example.
+	const char* find_text[3] = { "find_me", "find_me_2", NULL };
+	const char* replace_text[3] = { "replace_me", "replace_me_2", NULL };
+
+	char* sql_buff = sql_find_and_replace(
+			"sql/sample.sql",
+			find_text,
+			replace_text);
+	printf("Replaced SQL Buffer:\n%s\n\n", sql_buff);
+	free(sql_buff);
+
 	// initiate HTTP_Server
 	HTTP_Server http_server;
 	http_init(&http_server, 6100);

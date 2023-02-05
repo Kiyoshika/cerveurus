@@ -21,6 +21,7 @@ add_subdirectory(src)
 enable_testing()
 #add_subdirectory(test)
 
-# copy the static/ and templates/ directories to build/src folder
+# copy static/templates/sql folders to the build directory
 file(COPY ${Cerveurus_SOURCE_DIR}/static DESTINATION ${Cerveurus_SOURCE_DIR}/build/src)
 file(COPY ${Cerveurus_SOURCE_DIR}/templates DESTINATION ${Cerveurus_SOURCE_DIR}/build/src)
+file(COPY ${Cerveurus_SOURCE_DIR}/sql DESTINATION ${Cerveurus_SOURCE_DIR}/build/src)
