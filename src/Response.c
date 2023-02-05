@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-char * render_static_file(char * fileName) {
+char * render_static_file(const char * const fileName) {
 	FILE* file = fopen(fileName, "r");
 
 	if (file == NULL) {
