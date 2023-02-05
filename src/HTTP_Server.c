@@ -436,7 +436,7 @@ void http_add_route_GET(
 		void (*user_data_dealloc)(void* user_data),
 		char* (*get_callback)(struct CallbackArgs * const args))
 {
-	if (http_server->routes)
+	if (!http_server->routes)
 		http_server->routes = initRoute(route_path, NULL, user_data, user_data_dealloc, get_callback, NULL, NULL);
 	else
 		addRoute(&http_server->routes, route_path, NULL, user_data, user_data_dealloc, get_callback, NULL, NULL);
@@ -449,7 +449,7 @@ void http_add_route_POST(
 		void (*user_data_dealloc)(void* user_data),
 		void (*post_callback)(struct CallbackArgs * const args))
 {
-	if (http_server->routes)
+	if (!http_server->routes)
 		http_server->routes = initRoute(route_path, NULL, user_data, user_data_dealloc, NULL, post_callback, NULL);
 	else
 		addRoute(&http_server->routes, route_path, NULL, user_data, user_data_dealloc, NULL, post_callback, NULL);
@@ -462,7 +462,7 @@ void http_add_route_DELETE(
 		void (*user_data_dealloc)(void* user_data),
 		void (*delete_callback)(struct CallbackArgs * const args))
 {
-	if (http_server->routes)
+	if (!http_server->routes)
 		http_server->routes = initRoute(route_path, NULL, user_data, user_data_dealloc, NULL, NULL, delete_callback);
 	else
 		addRoute(&http_server->routes, route_path, NULL, user_data, user_data_dealloc, NULL, NULL, delete_callback);
