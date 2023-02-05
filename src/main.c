@@ -34,6 +34,9 @@ void set_str(struct CallbackArgs * const args)
 	free(*data);
 	*data = strdup(args->request_body);
 
+	free(*(args->response_body));
+	*(args->response_body) = strdup("successfully set new string");
+
 	/* Example of how to pull a header value by key
 
 	struct KeyValuePair* find = sarray_get(args->headers, "MyHeader");
