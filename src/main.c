@@ -60,7 +60,7 @@ void dealloc(void* user_data)
 int main() {
 	// initiate HTTP_Server
 	HTTP_Server http_server;
-	http_init(&http_server, 6969);
+	http_init(&http_server, 6100);
 
 	// registering Routes
 	// a template route will never have get/post callbacks (they only return HTML).
