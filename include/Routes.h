@@ -19,7 +19,8 @@ struct CallbackArgs
 	const struct SortedArray * const params;
 	const struct SortedArray * const headers;
 	void* user_data;
-	const char* const request_body;
+	const char* const request_body; // request body (read only)
+	char** response_body; // the address of HTTP_Server.response_body
 };
 
 struct Route

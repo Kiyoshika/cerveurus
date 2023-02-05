@@ -124,13 +124,15 @@ static void http_render(
 	{
 		// by default all status codes will return 200 OK
 		enum http_status_code_e status_code = OK;
+
 		struct CallbackArgs args = {
 			.url = destination->value,
 			.status_code = &status_code,
 			.params = http_server->params,
 			.headers = http_server->headers,
 			.user_data = destination->user_data,
-			.request_body = http_server->request_body
+			.request_body = http_server->request_body,
+			.response_body = &http_server->response_body
 		};
 
 		switch (http_server->request_type)
