@@ -1,6 +1,9 @@
 # Cerveurus
 This is my personal fork from [cerveur](https://github.com/infraredCoding/cerveur), a simple web framework written in C for fun and learning.
 
+## Sample Project
+To see a full sample project built with Cerveurus, check out my [Cerveurus Sample Project](https://github.com/Kiyoshika/cerveurus-sample).
+
 ## Why a seperate project?
 I feel like the original project is pretty inactive and there are pull requests from 1+ months that are still open and there's a lot I want to contribute to this project so I decided to fork it and develop my own separate chain.
 
