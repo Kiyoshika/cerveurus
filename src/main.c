@@ -15,14 +15,20 @@
 #include "SortedArray.h"
 #include "SQL.h"
 
+struct mydata
+{
+	char* data;
+};
+
 // each callback (GET/POST/DELETE) defaults to return 200 OK.
 // this can be changed by adjusting the pointer, e.g., args->status_code = CREATED
 // see HTTP_Server.h for list of status codes
 
 // sample GET callback for /mystr (return the value of a local string)
-char* get_str(struct CallbackArgs * const args)
+void get_str(struct CallbackArgs * const args)
 {
-	return *(char**)args->user_data;
+	struct mydata* data = args->user_data;
+	*(args->response_body) = strdup(data->data);
 }
 
 // sample POST callback for /mystr (set the value of a local string)
@@ -31,9 +37,9 @@ void set_str(struct CallbackArgs * const args)
 	// Our user_data is an address to a local char* variable.
 	// We cast to char** which holds the address and dereference + free before
 	// reallocating to the new string from the request_body
-	char** data = args->user_data;
-	free(*data);
-	*data = strdup(args->request_body);
+	struct mydata* data = args->user_data;
+	free(data->data);
+	data->data = strdup(args->request_body);
 
 	free(*(args->response_body));
 	*(args->response_body) = strdup("successfully set new string");
@@ -49,16 +55,16 @@ void set_str(struct CallbackArgs * const args)
 // sample DELETE callback for /mystr that just sets it to blank string
 void delete_str(struct CallbackArgs * const args)
 {
-	char** data = args->user_data;
-	free(*data);
-	*data = strdup("");
+	struct mydata* data = args->user_data;
+	free(data->data);
+	data->data = strdup("");
 }
 
 void dealloc(void* user_data)
 {
-	char** data = user_data;
-	free(*data);
-	*data = NULL;
+	struct mydata* data = user_data;
+	free(data->data);
+	data->data = NULL;
 }
 
 int main() {
@@ -96,8 +102,10 @@ int main() {
 	// this route manages a string resource. We also pass a deallocator
 	// that the server can clean up when it's killed (e.g., Ctrl+C)
 	// NOTE that you don't need to provide ALL callbacks, only the ones you want.
-	char* my_str = strdup("hello there!");
-	http_add_route_api(&http_server, "/mystr", &my_str, &dealloc, &get_str, &set_str, &delete_str);
+	struct mydata data;
+	data.data = strdup("hello there!");
+
+	http_add_route_api(&http_server, "/mystr", &data, &dealloc, &get_str, &set_str, &delete_str);
 
 	printf("\n====================================\n");
 	printf("=========ALL AVAILABLE ROUTES========\n");

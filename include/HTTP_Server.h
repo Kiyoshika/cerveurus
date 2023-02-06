@@ -96,7 +96,7 @@ void http_add_route_api(
 		char* route_path,
 		void* user_data,
 		void (*user_data_dealloc)(void*),
-		char* (*get_callback)(struct CallbackArgs * const args),
+		void (*get_callback)(struct CallbackArgs * const args),
 		void (*post_callback)(struct CallbackArgs * const args),
 		void (*delete_callback)(struct CallbackArgs * const args));
 
@@ -106,7 +106,7 @@ void http_add_route_GET(
 		char* route_path,
 		void* user_data,
 		void (*user_data_dealloc)(void*),
-		char* (*get_callback)(struct CallbackArgs * const args));
+		void (*get_callback)(struct CallbackArgs * const args));
 
 // Add route that handles POST request
 void http_add_route_POST(

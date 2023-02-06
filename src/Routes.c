@@ -10,7 +10,7 @@ struct Route * initRoute(
 		char* value,
 		void* user_data,
 		void (*user_data_dealloc)(void*),
-		char* (*get_callback)(struct CallbackArgs * const args),
+		void (*get_callback)(struct CallbackArgs * const args),
 		void (*post_callback)(struct CallbackArgs * const args),
 		void (*delete_callback)(struct CallbackArgs * const args))
 {
@@ -51,8 +51,11 @@ void freeRoutes(struct Route** root)
 		if ((*root)->right)
 			freeRoutes(&(*root)->right);
 
-		if ((*root)->user_data_dealloc)
+		if ((*root)->user_data_dealloc && (*root)->user_data)
+		{
 			(*root)->user_data_dealloc((*root)->user_data);
+			(*root)->user_data = NULL;
+		}
 
 		free(*root);
 		*root = NULL;
@@ -65,7 +68,7 @@ void addRoute(
 		char* value,
 		void* user_data,
 		void (*user_data_dealloc)(void* user_data),
-		char* (*get_callback)(struct CallbackArgs * const args),
+		void (*get_callback)(struct CallbackArgs * const args),
 		void (*post_callback)(struct CallbackArgs * const args),
 		void (*delete_callback)(struct CallbackArgs * const args))
  {

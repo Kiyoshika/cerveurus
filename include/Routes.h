@@ -31,7 +31,7 @@ struct Route
 	void* user_data;
 	void (*user_data_dealloc)(void*);
 
-	char* (*get_callback)(struct CallbackArgs * const args);
+	void (*get_callback)(struct CallbackArgs * const args);
 	void (*post_callback)(struct CallbackArgs * const args);
 	void (*delete_callback)(struct CallbackArgs * const args);
 			
@@ -43,7 +43,7 @@ struct Route * initRoute(
 		char* value,
 		void* user_data,
 		void (*user_data_dealloc)(void*),
-		char* (*get_callback)(struct CallbackArgs * const args),
+		void (*get_callback)(struct CallbackArgs * const args),
 		void (*post_callback)(struct CallbackArgs * const args),
 		void (*delete_callback)(struct CallbackArgs * const args));
 
@@ -53,7 +53,7 @@ void addRoute(
 		char* value,
 		void* user_data,
 		void (*user_data_dealloc)(void*),
-		char* (*get_callback)(struct CallbackArgs * const args),
+		void (*get_callback)(struct CallbackArgs * const args),
 		void (*post_callback)(struct CallbackArgs * const args),
 		void (*delete_callback)(struct CallbackArgs * const args));
 

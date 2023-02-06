@@ -140,7 +140,7 @@ static void http_render(
 
 			case GET:
 			{
-				http_server->response_body = strdup(destination->get_callback(&args));
+				destination->get_callback(&args);
 				http_send(http_server, status_code);
 			}
 			break;
@@ -419,7 +419,7 @@ void http_add_route_api(
 		char* route_path,
 		void* user_data,
 		void (*user_data_dealloc)(void* user_data),
-		char* (*get_callback)(struct CallbackArgs * const args),
+		void (*get_callback)(struct CallbackArgs * const args),
 		void (*post_callback)(struct CallbackArgs * const args),
 		void (*delete_callback)(struct CallbackArgs * const args))
 {
@@ -434,7 +434,7 @@ void http_add_route_GET(
 		char* route_path,
 		void* user_data,
 		void (*user_data_dealloc)(void* user_data),
-		char* (*get_callback)(struct CallbackArgs * const args))
+		void (*get_callback)(struct CallbackArgs * const args))
 {
 	if (!http_server->routes)
 		http_server->routes = initRoute(route_path, NULL, user_data, user_data_dealloc, get_callback, NULL, NULL);
