@@ -273,6 +273,7 @@ static void http_parse_client_data(
 		if (strlen(header_line) == 1)
 		{
 			header_line = strtok(NULL, "\n");
+			printf("\nREQUEST BODY:\n%s\n", header_line);
 			if (header_line) // if request body is present
 			{
 				// convert string to size_t for content length
