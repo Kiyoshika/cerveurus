@@ -346,8 +346,9 @@ void http_listen(HTTP_Server* http_server)
 			struct Route* destination = search(http_server->routes, http_server->request_url);
 			http_render(http_server, destination);
 
-			// cleanup URL parameters for next request
+			// cleanup URL parameters & headers for next request
 			sarray_clear(http_server->params);
+			sarray_clear(http_server->headers);
 
 			close(http_server->client_socket);
 		}
