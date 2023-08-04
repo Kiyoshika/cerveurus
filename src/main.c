@@ -105,7 +105,7 @@ int main() {
 	struct mydata data;
 	data.data = strdup("hello there!");
 
-	http_add_route_api(&http_server, "/mystr", &data, &dealloc, &get_str, &set_str, &delete_str);
+	http_add_route_api(&http_server, "/mystr", &data, &dealloc, &get_str, &set_str, NULL);
 
 	printf("\n====================================\n");
 	printf("=========ALL AVAILABLE ROUTES========\n");

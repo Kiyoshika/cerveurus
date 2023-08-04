@@ -137,9 +137,13 @@ static void http_render(
 
 		switch (http_server->request_type)
 		{
-
 			case GET:
 			{
+        if (!destination->get_callback)
+        {
+          printf("\n\n==== WARNING ====\nGET method undefined on this route.");
+          break;
+        }
 				destination->get_callback(&args);
 				http_send(http_server, status_code);
 			}
@@ -147,6 +151,11 @@ static void http_render(
 
 			case POST:
 			{
+        if (!destination->post_callback)
+        {
+          printf("\n\n==== WARNING ====\nPOST method undefined on this route.");
+          break;
+        }
 				destination->post_callback(&args);
 				http_send(http_server, status_code);
 			}
@@ -154,6 +163,11 @@ static void http_render(
 
 			case DELETE:
 			{
+        if (!destination->delete_callback)
+        {
+          printf("\n\n==== WARNING ====\nDELETE method undefined on this route.");
+          break;
+        }
 				destination->delete_callback(&args);
 				http_send(http_server, status_code);
 			}

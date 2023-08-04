@@ -11,8 +11,10 @@ include(CTest)
 option(RELEASE_MODE OFF)
 
 if (${RELEASE_MODE})
+  message("==== COMPILING IN RELEASE MODE ====")
 	set(CMAKE_C_FLAGS "-O2 -Wall -Wextra")
 else()
+  message("==== COMPILING IN DEBUG MODE ====")
 	set(CMAKE_C_FLAGS "-O0 -g -Wall -Wextra -Wpedantic -fsanitize=address")
 endif()
 
